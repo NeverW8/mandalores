@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Mandalores {% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('media') }}">Media</a></li>
+                <li>Tools
+                    <ul>
+                        <li><a href="{{ url_for('soundboard_clip_generator') }}">Soundboard Clip Generator</a></li>
+                        <li><a href="{{ url_for('emoji_resizer') }}">Emoji Resizer</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h1>{% block page_title %}Home{% endblock %}</h1>
+                <div class="user-info">
+                    Logged in as: {{ user.name }}
+                </div>
+            </div>
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeMessage = document.getElementById('welcome-message');
+            if (welcomeMessage) {
+                setTimeout(() => {
+                    welcomeMessage.style.display = 'none';
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
+

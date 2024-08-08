@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Soundboard Clip Generator - Mandalores {% endblock %}
+
+{% block page_title %}Soundboard Clip Generator{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('soundboard_clip_generator') }}" method="post">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" required>
+
+    <label for="start_time">Start Time (HH:MM:SS):</label>
+    <input type="text" id="start_time" name="start_time" required>
+
+    <label for="stop_time">Stop Time (HH:MM:SS):</label>
+    <input type="text" id="stop_time" name="stop_time" required>
+
+    <button type="submit">Generate Clip</button>
+</form>
+
+{% if clip %}
+    <p>Status: <span id="clip-status">{{ clip.status }}</span></p>
+    <div id="download-container">
+        {% if clip.status == 'Completed' %}
+            <a id="download-link" href="{{ url_for('download_clip', clip_id=clip.id) }}">Download Clip</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+<script>
+    {% if clip %}
+    function checkStatus() {
+        fetch('{{ url_for("get_clip_status", clip_id=clip.id) }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('clip-status').innerText = data.status;
+                if (data.status === 'Completed') {
+                    clearInterval(statusInterval);
+                    const downloadContainer = document.getElementById('download-container');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.id = 'download-link';
+                    downloadLink.href = '{{ url_for("download_clip", clip_id=clip.id) }}';
+                    downloadLink.innerText = 'Download Clip';
+                    downloadContainer.appendChild(downloadLink);
+                }
+            });
+    }
+    const statusInterval = setInterval(checkStatus, 5000); // Check every 5 seconds
+    {% endif %}
+</script>
+{% endblock %}
+
