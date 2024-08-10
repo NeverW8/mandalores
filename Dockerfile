@@ -21,6 +21,8 @@ RUN wget -O /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/late
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
+RUN pip3 install venv
+RUN python3 -m venv venv
 COPY requirements.txt $APP_HOME/
 
 RUN pip3 install --no-cache-dir -r requirements.txt
