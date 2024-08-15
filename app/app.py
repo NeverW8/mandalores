@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from app.models import SoundClip
 from app.scripts.soundboard_clip_generator import downloadClip
 from app import db
+import requests
 
 app = Flask(__name__)
 
@@ -26,12 +27,29 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = (
 app.config["DISCORD_CLIENT_ID"] = os.getenv("DISCORD_CLIENT_ID")
 app.config["DISCORD_CLIENT_SECRET"] = os.getenv("DISCORD_CLIENT_SECRET")
 app.config["DISCORD_REDIRECT_URI"] = os.getenv("DISCORD_REDIRECT_URI")
+app.config["DISCORD_WEBHOOK_URL"] = os.getenv("DISCORD_WEBHOOK_URL")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 discord = DiscordOAuth2Session(app)
 ALLOWED_USERS = ["fiskenhero"]
+
+
+def discord_webhook(username, message):
+    if not os.getenv("DISCORD_WEBHOOK_URL"):
+        print("No Discord webhook URL found.")
+    else:
+        webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
+        username = discord.fetch_user()
+        message = f"{username} logged in.."
+        data = {"content": message}
+        response = requests.post(webhook_url, json=data)
+
+        if response.status_code == 204:
+            print("Message sent successfully.")
+        else:
+            print(f"Failed to send message. Status code: {response.status_code}")
 
 
 def allowed_user(func):
@@ -68,6 +86,7 @@ def start_login():
 def callback():
     discord.callback()
     user = discord.fetch_user()
+    discord_webhook(user.name, "has logged in")
     return redirect(url_for("home"))
 
 
@@ -164,10 +183,6 @@ def tba():
     user = discord.fetch_user()
     return render_template("home.html", message=welcome_user(user), user=user)
 
-
-@app.errorhandler(403)
-def redirect_unauthorized(e):
-    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
