@@ -1,14 +1,15 @@
-import os
-from functools import wraps
-from flask import redirect, url_for, render_template, abort, request, send_file
-from flask import current_app as app
+from flask import Flask, redirect, url_for, render_template, abort, request, send_file
 from flask_discord import DiscordOAuth2Session, requires_authorization
 from threading import Thread
 from dotenv import load_dotenv
 from app.models import SoundClip
 from app.scripts.soundboard_clip_generator import downloadClip
-from app import db
+from app import db, create_app
+from functools import wraps
 import requests
+import os
+
+app = create_app()  # Use the create_app function to get the app instance
 
 if os.path.exists('.envrc'):
     load_dotenv('.envrc')
@@ -19,17 +20,12 @@ print("DISCORD_CLIENT_ID:", os.getenv("DISCORD_CLIENT_ID"))
 print("DATABASE_URL:", os.getenv("DATABASE_URL"))
 
 app.secret_key = b"random bytes representing flask secret key"
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = (
-    "false"  # !! Only in the development environment.
-)
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "false"
 
 app.config["DISCORD_CLIENT_ID"] = os.getenv("DISCORD_CLIENT_ID")
 app.config["DISCORD_CLIENT_SECRET"] = os.getenv("DISCORD_CLIENT_SECRET")
 app.config["DISCORD_REDIRECT_URI"] = os.getenv("DISCORD_REDIRECT_URI")
 app.config["DISCORD_WEBHOOK_URL"] = os.getenv("DISCORD_WEBHOOK_URL")
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 discord = DiscordOAuth2Session(app)
 ALLOWED_USERS = ["fiskenhero"]
