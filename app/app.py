@@ -28,7 +28,7 @@ app.config["DISCORD_REDIRECT_URI"] = os.getenv("DISCORD_REDIRECT_URI")
 app.config["DISCORD_WEBHOOK_URL"] = os.getenv("DISCORD_WEBHOOK_URL")
 
 discord = DiscordOAuth2Session(app)
-ALLOWED_USERS = ["fiskenhero"]
+ALLOWED_USERS = ["fiskenhero", "soew", "exosist"]
 
 
 def discord_webhook(username, message):
