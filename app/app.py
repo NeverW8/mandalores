@@ -9,12 +9,13 @@ from functools import wraps
 import requests
 import os
 
-app = create_app()  # Use the create_app function to get the app instance
+app = create_app()
 
 if os.path.exists('.envrc'):
     load_dotenv('.envrc')
 else:
-    load_dotenv()
+    print("No .envrc file found, using db instead")
+
 
 print("DISCORD_CLIENT_ID:", os.getenv("DISCORD_CLIENT_ID"))
 print("DATABASE_URL:", os.getenv("DATABASE_URL"))
@@ -28,7 +29,7 @@ app.config["DISCORD_REDIRECT_URI"] = os.getenv("DISCORD_REDIRECT_URI")
 app.config["DISCORD_WEBHOOK_URL"] = os.getenv("DISCORD_WEBHOOK_URL")
 
 discord = DiscordOAuth2Session(app)
-ALLOWED_USERS = ["fiskenhero", "soew", "exosist"]
+ALLOWED_USERS = ["fiskenhero", "soew", "exosist", "johndoh"]
 
 
 def discord_webhook(username, message):
@@ -177,7 +178,6 @@ def emoji_resizer():
 def tba():
     user = discord.fetch_user()
     return render_template("home.html", message=welcome_user(user), user=user)
-
 
 
 if __name__ == "__main__":
