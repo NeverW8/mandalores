@@ -26,3 +26,6 @@ Run the app
 **Note**
 This is a work in progress and is primarly used for an internal project for the zHan community.
 
+## When doing development..
+When we want to test a connnection or population of a database, we've created a dockerfile inside of the _dev_ folder.
+
