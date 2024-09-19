@@ -31,4 +31,3 @@ def init_app():
         except Exception as e:
             app.logger.error(f"Failed to connect to the PostgreSQL database: {e}")
     return app
-
