@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from os import getenv
 
-from django.urls import reverse
 from dotenv import load_dotenv
 
 # Load environment variables from .env file

@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path, reverse
-from django.views.generic.base import RedirectView
+from django.urls import path
 from django.views.decorators.csrf import requires_csrf_token
 
 # To force the /admin page to always redirect to the login and never show the form
