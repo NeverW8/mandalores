@@ -24,9 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = environ.get('SECRET_KEY', 'django-insecure-(2l-z)2&*j$)+nzvhqe^9$5&!ib)^=hmcny8+l+7knbqwy0(dv')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environ.get('ENV', 'local') == 'local'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    environ.get('ALLOWED_HOST', 'localhost')
+]
 
 
 # Application definition
