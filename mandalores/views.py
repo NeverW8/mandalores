@@ -1,28 +1,28 @@
 from django.shortcuts import redirect
-from flask_login import login_required
-import requests
-
-from json import loads
-from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import RedirectURLMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, JsonResponse
-from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
-from django.views.decorators.csrf import requires_csrf_token
 from django.views.generic import View, TemplateView
 
 
-class DiscordAuthView(View):
+class LoginView(TemplateView):
+    template_name = 'login.html'
+
+
+class DiscordAuthView(RedirectURLMixin, View):
+
+    next_page = '/'
 
     def get(self, request, *args, **kwargs):
         user = authenticate(request)
         if user and user.is_authenticated:
             login(request, user)
-            return redirect('/')
+            return redirect(request.session['next_page'])
+
+        request.session['next_page'] = self.get_success_url()
 
         redirect_uri = request.build_absolute_uri(reverse('discord_auth'))
         discord_login_url = (

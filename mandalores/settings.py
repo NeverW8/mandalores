@@ -156,5 +156,4 @@ DISCORD_DEFAULT_ALLOWED_USERS = ["fiskenhero", "soew", "exosist", "johndoh"]
 DISCORD_API_ENDPOINT = 'https://discord.com/api/v10'
 DISCORD_OAUTH_AUTHORIZE_ENDPIONT = 'https://discord.com/api/oauth2/authorize'
 
-# Only use the discord login path
-LOGIN_URL = '/discord/auth/'
+LOGIN_URL = '/login/'

@@ -29,11 +29,13 @@ admin.site.login = staff_member_required(admin.site.login, login_url=settings.LO
 from mandalores.views import (
     DiscordAuthView,
     HomeView,
+    LoginView,
 )
 
 
 urlpatterns = [
-    path('discord/auth/', requires_csrf_token(DiscordAuthView.as_view()), name='discord_auth'),
     path('', HomeView.as_view(), name='home'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('discord/auth/', requires_csrf_token(DiscordAuthView.as_view()), name='discord_auth'),
     path('admin/', admin.site.urls),
 ]
