@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.views.decorators.csrf import csrf_exempt
 
 # To force the /admin page to always redirect to the login and never show the form
 # if the user completes the authorization and is a staff the admin page then loads
@@ -24,7 +25,17 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import admin
 admin.site.login = staff_member_required(admin.site.login, login_url=settings.LOGIN_URL)
 
+from mandalores.views import (
+    HomeView,
+    discord_overriden_callback,
+    DiscordAuthView,
+)
+
+
 urlpatterns = [
+    path('oauth2/callback/', discord_overriden_callback, name='discord_callback'),
     path('oauth2/', include('django_discord_oauth2.urls')),
+    path('discord_login/', csrf_exempt(DiscordAuthView.as_view()), name='discord_login'),
+    path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
 ]

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Mandalores {% endblock %}
+
+{% block page_title %}Home{% endblock %}
+
+{% block content %}
+<p id="welcome-message">Welcome {{ user.discord_user.discord_username }}</p>
+<p>Welcome to the home page!</p>
+{% endblock %}

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from os import getenv
 
+from django.urls import reverse
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -146,6 +147,9 @@ DISCORD_CLIENT_ID = getenv("DISCORD_CLIENT_ID")
 DISCORD_CLIENT_SECRET = getenv("DISCORD_CLIENT_SECRET")
 DISCORD_REDIRECT_URI = getenv("DISCORD_REDIRECT_URI")
 DISCORD_WEBHOOK_URL = getenv("DISCORD_WEBHOOK_URL")
+
+DISCORD_DEFAULT_ALLOWED_USERS = ["fiskenhero", "soew", "exosist", "johndoh"]
+DISCORD_AUTH_ENDPOINT = 'discord_login'
 
 # Only use the oauth2 login path
 LOGIN_URL = '/oauth2/login/'
