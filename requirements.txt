@@ -4,6 +4,7 @@ cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
+django==5.1.1
 Flask==3.0.2
 Flask-Discord==0.1.69
 Flask-Login==0.6.3
