@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from os import environ
+from os import getenv
+
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv('.envrc')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,13 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = environ.get('SECRET_KEY', 'django-insecure-(2l-z)2&*j$)+nzvhqe^9$5&!ib)^=hmcny8+l+7knbqwy0(dv')
+SECRET_KEY = getenv('SECRET_KEY', 'django-insecure-(2l-z)2&*j$)+nzvhqe^9$5&!ib)^=hmcny8+l+7knbqwy0(dv')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ.get('ENV', 'local') == 'local'
+DEBUG = getenv('ENV', 'local') == 'local'
 
 ALLOWED_HOSTS = [
-    environ.get('ALLOWED_HOST', 'localhost')
+    getenv('ALLOWED_HOST', 'localhost')
 ]
 
 
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_discord_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -81,9 +87,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mandalores',
         'USER': 'mandalores',
-        'PASSWORD': environ.get('DB_PASSWORD', 'mysecretpassword'),
-        'HOST': environ.get('DB_HOST', 'localhost'),
-        'PORT': environ.get('DB_PORT', '5432'),
+        'PASSWORD': getenv('DB_PASSWORD', 'mysecretpassword'),
+        'HOST': getenv('DB_HOST', 'localhost'),
+        'PORT': getenv('DB_PORT', '5432'),
     }
 }
 
@@ -132,3 +138,13 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Discord OAuth2 settings
+DISCORD_CLIENT_ID = getenv("DISCORD_CLIENT_ID")
+DISCORD_CLIENT_SECRET = getenv("DISCORD_CLIENT_SECRET")
+DISCORD_REDIRECT_URI = getenv("DISCORD_REDIRECT_URI")
+DISCORD_WEBHOOK_URL = getenv("DISCORD_WEBHOOK_URL")
+
+# Only use the oauth2 login path
+LOGIN_URL = '/oauth2/login/'
