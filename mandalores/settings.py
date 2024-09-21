@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_discord_oauth2',
+    'mandalores',
 ]
 
 MIDDLEWARE = [
