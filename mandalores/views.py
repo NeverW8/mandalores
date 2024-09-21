@@ -1,61 +1,39 @@
+from django.shortcuts import redirect
+from flask_login import login_required
 import requests
 
 from json import loads
 from typing import Any
 
 from django.conf import settings
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.csrf import requires_csrf_token
 from django.views.generic import View, TemplateView
-from django.views.decorators.csrf import ensure_csrf_cookie
-
-from django_discord_oauth2.views import discord_callback
-
-from mandalores.models import DiscordUser, create_user_and_discord_user
-
-
-# The django-discord-oauth2 package does not do a reverse on the
-# DISCORD_POST_URL so it has to be an absolute URL with protocol.
-# To alleviate that we override the default callback with a wrapper
-@ensure_csrf_cookie
-def discord_overriden_callback(request: HttpRequest):
-    response: JsonResponse = discord_callback(request)
-    post_response = requests.post(
-        request.build_absolute_uri(reverse(settings.DISCORD_AUTH_ENDPOINT)),
-        # Rebuild the content into a JSON dict
-        json=loads(response.content)
-    )
-    if post_response.status_code != 200:
-        return HttpResponseForbidden()
-    response = HttpResponseRedirect(redirect_to=reverse('home'))
-    for key, value in post_response.cookies.items():
-        response.set_cookie(key, value)
-    return response
 
 
 class DiscordAuthView(View):
 
-    success_url = '/'
+    def get(self, request, *args, **kwargs):
+        user = authenticate(request)
+        if user and user.is_authenticated:
+            login(request, user)
+            return redirect('/')
 
-    def post(self, request: HttpRequest, *args, **kwargs):
-        json_data = loads(request.body)
-        try:
-            discord_user = DiscordUser.objects.get(discord_id=json_data['id'])
-            user = discord_user.model_user
-        except DiscordUser.DoesNotExist:
-            user, discord_user = create_user_and_discord_user(
-                username=json_data['username'],
-                email=json_data['email'],
-                discord_id=json_data['id']
-            )
-        login(self.request, user)
-        return HttpResponse()
+        redirect_uri = request.build_absolute_uri(reverse('discord_auth'))
+        discord_login_url = (
+            f"{settings.DISCORD_OAUTH_AUTHORIZE_ENDPIONT}"
+            f"?client_id={settings.DISCORD_CLIENT_ID}"
+            f"&redirect_uri={redirect_uri}"
+            "&response_type=code"
+            "&scope=identify"
+        )
+        return redirect(discord_login_url)
 
 
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        return super().get(request, *args, **kwargs)

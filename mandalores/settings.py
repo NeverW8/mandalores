@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_discord_oauth2',
     'mandalores',
 ]
 
@@ -76,6 +75,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'mandalores.auth.backends.DiscordOAuth2AuthorizationBackend',
 ]
 
 WSGI_APPLICATION = 'mandalores.wsgi.application'
@@ -149,7 +152,9 @@ DISCORD_REDIRECT_URI = getenv("DISCORD_REDIRECT_URI")
 DISCORD_WEBHOOK_URL = getenv("DISCORD_WEBHOOK_URL")
 
 DISCORD_DEFAULT_ALLOWED_USERS = ["fiskenhero", "soew", "exosist", "johndoh"]
-DISCORD_AUTH_ENDPOINT = 'discord_login'
 
-# Only use the oauth2 login path
-LOGIN_URL = '/oauth2/login/'
+DISCORD_API_ENDPOINT = 'https://discord.com/api/v10'
+DISCORD_OAUTH_AUTHORIZE_ENDPIONT = 'https://discord.com/api/oauth2/authorize'
+
+# Only use the discord login path
+LOGIN_URL = '/discord/auth/'

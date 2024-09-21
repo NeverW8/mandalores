@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 def create_user_and_discord_user(username: str, email: str, discord_id: str) -> tuple['User', 'DiscordUser']:
     if username not in settings.DISCORD_DEFAULT_ALLOWED_USERS:
-        raise PermissionDenied(f'{username} not in allowed users')
+        return None, None
 
     user = get_user_model().objects.create(
         username=discord_id,
