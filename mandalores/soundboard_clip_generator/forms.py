@@ -24,16 +24,16 @@ class TimeField(forms.TimeField):
 class SoundBoardClipGeneratorForm(forms.Form):
     url = forms.URLField()
     start_time = TimeField(input_formats=['%H:%M:%S'])
-    end_time = TimeField(input_formats=['%H:%M:%S'])
+    stop_time = TimeField(input_formats=['%H:%M:%S'])
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.fields['start_time'].widget = TimeInput()
-        self.fields['end_time'].widget = TimeInput()
+        self.fields['stop_time'].widget = TimeInput()
 
     def clean(self) -> None:
         cleaned_data = super().clean()
         start_time = cleaned_data.get('start_time')
-        end_time = cleaned_data.get('end_time')
-        if start_time and end_time and not ( start_time < end_time):
+        stop_time = cleaned_data.get('stop_time')
+        if start_time and stop_time and not ( start_time < stop_time):
             raise forms.ValidationError('Start time must be before stop time')

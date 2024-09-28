@@ -1,16 +1,36 @@
 from typing import Any
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView
+from django.urls import reverse
+from django.views.generic import FormView, TemplateView
+
 
 from mandalores.soundboard_clip_generator.forms import SoundBoardClipGeneratorForm
+from mandalores.soundboard_clip_generator.models import SoundClip
+
 
 class GenerateClip(LoginRequiredMixin, FormView):
     template_name = 'soundboard_clip_generator/soundboard_clip_generator.html'
 
+    success_url = 'soundboard:clip_with_id'
+
     form_class = SoundBoardClipGeneratorForm
 
-    def form_valid(self, form: Any) -> HttpResponse:
-        print("FORM VALID!")
-        return super().form_valid(form)
+    def form_valid(self, form: SoundBoardClipGeneratorForm) -> HttpResponse:
+        sound_clip = SoundClip.objects.create(
+            url=form.cleaned_data.get('url'),
+            start_time=form.cleaned_data.get('start_time'),
+            stop_time=form.cleaned_data.get('stop_time'),
+        )
+        return HttpResponseRedirect(
+            reverse(self.success_url, kwargs={'clip_id': sound_clip.id})
+        )
+
+
+class ClipView(LoginRequiredMixin, TemplateView):
+    template_name = 'soundboard_clip_generator/clip_details.html'
+
+    def get_context_data(self, clip_id) -> dict[str, Any]:
+        context =  super().get_context_data()
+        context['clip'] = SoundClip.objects.get(id=clip_id)
+        return context
