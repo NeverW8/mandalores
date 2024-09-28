@@ -5,25 +5,28 @@
 {% block page_title %}Soundboard Clip Generator{% endblock %}
 
 {% block content %}
-    <p>Status: <span id="clip-status">{{ clip.get_status_display }}</span></p>
+    <input hidden id="clip-status">{{ clip.status }}</input>
+    <p>Status: <span id="clip-status-display">{{ clip.get_status_display }}</span></p>
+    <p>Source: <span id="clip-source"><a href="{{ clip.url }}">{{ clip.url }}</a></span></p>
+    <p>Between: <span id="clip-start-time">{{ clip.start_time|time:'H:i:s' }}</span> and <span id="clip-stop-time">{{ clip.stop_time|time:'H:i:s' }}</span></p>
     <div id="download-container">
-        {% if clip.status == 'completed' %}
-            <a id="download-link" href="{% url 'home' %}">Download Clip</a>
+        {% if clip.status == 'completed' and clip.file %}
+            <a id="download-link" href="{% url 'soundboard:download' clip.id %}">Download Clip</a>
         {% endif %}
     </div>
 
+{% if clip.status == 'pending' %}
 <script>
     function checkStatus() {
-        fetch("{% url 'soundboard:clip_with_id' clip.id %}")
+        fetch("{% url 'soundboard:clip_details' clip.id %}")
             .then(response => response.json())
             .then(data => {
-                document.getElementById('clip-status').innerText = data.status;
                 if (data.status === 'completed') {
                     clearInterval(statusInterval);
                     const downloadContainer = document.getElementById('download-container');
                     const downloadLink = document.createElement('a');
                     downloadLink.id = 'download-link';
-                    downloadLink.href = '{% url "home" %}';
+                    downloadLink.href = '{% url "soundboard:download" clip.id %}';
                     downloadLink.innerText = 'Download Clip';
                     downloadContainer.appendChild(downloadLink);
                 }
@@ -31,5 +34,6 @@
     }
     const statusInterval = setInterval(checkStatus, 5000); // Check every 5 seconds
 </script>
+{% endif %}
 
 {% endblock %}

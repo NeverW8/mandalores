@@ -15,7 +15,7 @@ class SoundClip(models.Model):
         default='pending',
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    file = models.FileField(null=True, blank=True)
+    file = models.FileField(upload_to='clips', null=True, blank=True)
 
 
     class Meta:

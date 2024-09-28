@@ -1,8 +1,9 @@
 from typing import Any
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, FileResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, View
+from django.shortcuts import get_object_or_404
 
 
 from mandalores.soundboard_clip_generator.forms import SoundBoardClipGeneratorForm
@@ -32,5 +33,21 @@ class ClipView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, clip_id) -> dict[str, Any]:
         context =  super().get_context_data()
-        context['clip'] = SoundClip.objects.get(id=clip_id)
+        context['clip'] = get_object_or_404(SoundClip, id=clip_id)
         return context
+
+
+class ClipDetails(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest, clip_id=None, **kwargs) -> HttpResponse:
+        clip = get_object_or_404(SoundClip, id=clip_id)
+        return JsonResponse(
+            {
+                'status': clip.status,
+            }
+        )
+
+class ClipDownloader(LoginRequiredMixin, View):
+
+    def get(self, request, clip_id):
+        clip = get_object_or_404(SoundClip, id=clip_id)
+        return FileResponse(clip.file.file, as_attachment=True)
