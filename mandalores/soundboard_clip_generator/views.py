@@ -1,3 +1,4 @@
+from threading import Thread
 from typing import Any
 
 from django.db import transaction
@@ -28,9 +29,10 @@ class GenerateClip(LoginRequiredMixin, FormView):
                 start_time=form.cleaned_data.get('start_time'),
                 stop_time=form.cleaned_data.get('stop_time'),
             )
-            # For local dev we perform the download and processing inline
+            # For local dev we perform the download and processing inline in a thread
             if settings.DEBUG:
-                downloadClip(sound_clip)
+                thread = Thread(target=downloadClip, args=(sound_clip,))
+                thread.start()
             return HttpResponseRedirect(
                 reverse(self.success_url, kwargs={'clip_id': sound_clip.id})
             )
