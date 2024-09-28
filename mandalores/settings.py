@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mandalores',
+    'mandalores.soundboard_clip_generator',
 ]
 
 MIDDLEWARE = [

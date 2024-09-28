@@ -20,8 +20,8 @@
                 {% endcomment %}
                 <li>Tools
                     <ul>
+                        <li><a href="{% url 'soundboard:generate_clip' %}">Soundboard Clip Generator</a></li>
                         {% comment %}
-                        <li><a href="{{ url_for('soundboard_clip_generator') }}">Soundboard Clip Generator</a></li>
                         <li><a href="{{ url_for('emoji_resizer') }}">Emoji Resizer</a></li>
                         {% endcomment %}
                     </ul>

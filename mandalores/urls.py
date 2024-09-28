@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.decorators.csrf import requires_csrf_token
 
 # To force the /admin page to always redirect to the login and never show the form
@@ -31,10 +31,12 @@ from mandalores.views import (
     LoginView,
 )
 
+app_name = 'mandalores'
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('login/', LoginView.as_view(), name='login'),
     path('discord/auth/', requires_csrf_token(DiscordAuthView.as_view()), name='discord_auth'),
+    path('soundboard/', include('mandalores.soundboard_clip_generator.urls', namespace='soundboard')),
     path('admin/', admin.site.urls),
 ]
