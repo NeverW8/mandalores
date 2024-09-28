@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 ENV PYTHONUNBUFFERED=1 \
-    APP_HOME=/app
+    APP_HOME=/mandalores
 
 # Update package list and install required packages
 RUN apt-get update && apt-get install -y \
@@ -28,11 +28,13 @@ COPY requirements.txt $APP_HOME/
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . $APP_HOME/
+COPY mandalores $APP_HOME/mandalores
+COPY manage.py $APP_HOME/
+COPY run_django.sh $APP_HOME/
+COPY assets $APP_HOME/assets
 
-ENV FLASK_APP=app/app.py \
-    FLASK_ENV=production
+ENV ENV=production
 
 EXPOSE 5000
 ENV PATH="/opt/venv/bin:$PATH"
-CMD ["run_django.sh"]
+CMD ["/mandalores/run_django.sh"]
