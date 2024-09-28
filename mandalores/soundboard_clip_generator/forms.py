@@ -1,7 +1,7 @@
-from typing import Any, Mapping
+from typing import Any
 from django import forms
-from django.forms.renderers import BaseRenderer
-from django.forms.utils import ErrorList
+
+from mandalores.soundboard_clip_generator.models import SoundClip
 
 class TimeInput(forms.TimeInput):
     input_type = "time"
@@ -37,3 +37,12 @@ class SoundBoardClipGeneratorForm(forms.Form):
         stop_time = cleaned_data.get('stop_time')
         if start_time and stop_time and not ( start_time < stop_time):
             raise forms.ValidationError('Start time must be before stop time')
+
+        # Check if we have this exact clip already
+        url = cleaned_data.get('url')
+        if SoundClip.objects.filter(
+            url=url,
+            start_time=start_time,
+            stop_time=stop_time,
+        ).exists():
+            raise forms.ValidationError('That exact clip already exists')
