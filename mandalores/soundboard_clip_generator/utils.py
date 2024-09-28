@@ -45,6 +45,8 @@ def downloadClip(clip: SoundClip):
         clip.status = 'failed'
         clip.save()
         raise e
+    finally:
+            os.unlink(file_path)
 
 
 def generate_clip(clip_id):
