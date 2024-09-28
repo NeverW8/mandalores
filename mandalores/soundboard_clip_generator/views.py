@@ -1,6 +1,9 @@
 from typing import Any
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, FileResponse, JsonResponse
+
+from django.db import transaction
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, FileResponse, JsonResponse
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView, View
 from django.shortcuts import get_object_or_404
@@ -8,6 +11,7 @@ from django.shortcuts import get_object_or_404
 
 from mandalores.soundboard_clip_generator.forms import SoundBoardClipGeneratorForm
 from mandalores.soundboard_clip_generator.models import SoundClip
+from mandalores.soundboard_clip_generator.utils import downloadClip
 
 
 class GenerateClip(LoginRequiredMixin, FormView):
@@ -18,14 +22,18 @@ class GenerateClip(LoginRequiredMixin, FormView):
     form_class = SoundBoardClipGeneratorForm
 
     def form_valid(self, form: SoundBoardClipGeneratorForm) -> HttpResponse:
-        sound_clip = SoundClip.objects.create(
-            url=form.cleaned_data.get('url'),
-            start_time=form.cleaned_data.get('start_time'),
-            stop_time=form.cleaned_data.get('stop_time'),
-        )
-        return HttpResponseRedirect(
-            reverse(self.success_url, kwargs={'clip_id': sound_clip.id})
-        )
+        with transaction.atomic():
+            sound_clip = SoundClip.objects.create(
+                url=form.cleaned_data.get('url'),
+                start_time=form.cleaned_data.get('start_time'),
+                stop_time=form.cleaned_data.get('stop_time'),
+            )
+            # For local dev we perform the download and processing inline
+            if settings.DEBUG:
+                downloadClip(sound_clip)
+            return HttpResponseRedirect(
+                reverse(self.success_url, kwargs={'clip_id': sound_clip.id})
+            )
 
 
 class ClipView(LoginRequiredMixin, TemplateView):
