@@ -9,21 +9,27 @@ Install the dependencies with pip
 
 Add your relevant credentials to a file called '.envrc' in the root directory. The file should look like this:
 ```
-DISCORD_CLIENT_ID=<not_needed>
-DISCORD_CLIENT_SECRET=<not_needed>
+ENV=local
+DISCORD_CLIENT_ID=<client-id>
+DISCORD_CLIENT_SECRET=<client-secret>
 DISCORD_REDIRECT_URI=<redirect_uri>
-DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 ```
 
-### Running the app
-After you've setup the database and added your credentials to the .envrc file, you'll need to build the dockerfile.
-> docker build -t mandalores .
+### Setting up the database
+After you've added your credentials to the .envrc file, you'll need to start up the database,
+> docker-compose -d up
 
-Then you can run the docker container, exposing the correct port.
-> docker run -p 5000:5000 mandalores
+Then you want to run the migrations
+> ./manage.py migrate
+
+### Running the app
+To run the app for developmen you just do:
+> ./manage.py runserver 8000
+
+Then you can browse to http://localhost:8000
+Then to start the Discord Auth process click the login
 
 ---
-
 **Note**
 This is a work in progress and is primarly used for an internal project for the zHan community.
 
