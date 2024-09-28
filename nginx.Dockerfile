@@ -31,6 +31,6 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 ENV ENV=production
 
-EXPOSE 5000
+EXPOSE 8080
 ENV PATH="/opt/venv/bin:$PATH"
 CMD ["/mandalores/run_nginx.sh"]
