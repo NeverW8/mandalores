@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'mandalores',
     'mandalores.soundboard_clip_generator',
     'mandalores.emoji_resizer',
+    'mandalores.media_material',
 ]
 
 MIDDLEWARE = [

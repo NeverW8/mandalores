@@ -39,5 +39,6 @@ urlpatterns = [
     path('discord/auth/', requires_csrf_token(DiscordAuthView.as_view()), name='discord_auth'),
     path('soundboard/', include('mandalores.soundboard_clip_generator.urls', namespace='soundboard')),
     path('emoji/', include('mandalores.emoji_resizer.urls', namespace='emoji')),
+    path('media/', include('mandalores.media_material.urls', namespace='media_material')),
     path('admin/', admin.site.urls),
 ]
