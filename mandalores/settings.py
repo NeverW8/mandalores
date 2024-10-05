@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mandalores',
     'mandalores.soundboard_clip_generator',
+    'mandalores.emoji_resizer',
 ]
 
 MIDDLEWARE = [

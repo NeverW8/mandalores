@@ -21,9 +21,7 @@
                 <li>Tools
                     <ul>
                         <li><a href="{% url 'soundboard:generate_clip' %}">Soundboard Clip Generator</a></li>
-                        {% comment %}
-                        <li><a href="{{ url_for('emoji_resizer') }}">Emoji Resizer</a></li>
-                        {% endcomment %}
+                        <li><a href="{% url 'emoji:index' %}">Emoji Resizer</a></li>
                     </ul>
                 </li>
             </ul>
