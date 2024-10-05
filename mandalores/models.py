@@ -1,9 +1,12 @@
 from typing import TYPE_CHECKING
+
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
 
+from requests import post
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import User
@@ -39,3 +42,19 @@ class DiscordUser(models.Model):
         unique=True,
     )
     discord_email = models.EmailField()
+
+
+@receiver(user_logged_in)
+def on_login(sender, user, request, **kwargs):
+    # No webhook configured
+    if not settings.DISCORD_WEBHOOK_URL:
+        return
+    # Not a discord user
+    if not user.discord_user or not user.discord_user.discord_username:
+        return
+    response = post(
+        settings.DISCORD_WEBHOOK_URL, json={
+            'content': f'{user.discord_user.discord_username} logged in..'
+        }
+    )
+    response.raise_for_status()
