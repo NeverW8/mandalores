@@ -1,0 +1,15 @@
+services:
+  mandalores_db:
+    container_name: mandalores_db
+    image: postgres:13.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_USER: mandalores
+      POSTGRES_DB: mandalores
+    volumes:
+      - mandalores_data:/var/lib/postgresql/data
+
+volumes:
+  mandalores_data:
