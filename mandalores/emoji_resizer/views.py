@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import TemplateView
 
 
 class EmojiPlaceholderView(LoginRequiredMixin, TemplateView):
