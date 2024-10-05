@@ -35,14 +35,14 @@ def downloadClip(clip: SoundClip):
             with open(file_path, 'rb') as output_file:
                 temp_file.write(output_file.read())
 
-            clip.status = 'completed'
+            clip.status = SoundClip.COMPLETED_STATUS
             clip.file.save(f"soundclip_{clip.id}.mp3", File(temp_file))
             clip.save()
     except subprocess.CalledProcessError as e:
         print(e)
         print(e.stdout)
         print(e.stderr)
-        clip.status = 'failed'
+        clip.status = SoundClip.FAILED_STATUS
         clip.save()
         raise e
     finally:
@@ -55,5 +55,5 @@ def generate_clip(clip_id):
     try:
         downloadClip(clip)
     except Exception as e:
-        clip.status = 'failed'
+        clip.status = SoundClip.FAILED_STATUS
         clip.save()

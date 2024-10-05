@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, FileResponse, JsonResponse
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView, View
+from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 
 
@@ -47,12 +48,16 @@ class ClipView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ClipDetails(LoginRequiredMixin, View):
+class ClipDetailsAPI(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, clip_id=None, **kwargs) -> HttpResponse:
         clip = get_object_or_404(SoundClip, id=clip_id)
         return JsonResponse(
             {
                 'status': clip.status,
+                'statusDisplay': clip.get_status_display(),
+                'completed': clip.completed,
+                'failed': clip.failed,
+                'pending': clip.pending,
             }
         )
 
@@ -61,3 +66,8 @@ class ClipDownloader(LoginRequiredMixin, View):
     def get(self, request, clip_id):
         clip = get_object_or_404(SoundClip, id=clip_id)
         return FileResponse(clip.file.file, as_attachment=True)
+
+
+class ClipListView(LoginRequiredMixin, ListView):
+    model = SoundClip
+    template_name = 'soundboard_clip_generator/clips_list.html'

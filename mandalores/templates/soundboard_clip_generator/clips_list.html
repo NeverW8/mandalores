@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Soundboard Clips - Mandalores {% endblock %}
+
+{% block page_title %}Soundboard Clips{% endblock %}
+
+{% block content %}
+
+<h1>Sound Clips</h1>
+<ul>
+{% for clip in object_list %}
+    <li class="{{clip.status}}-status">
+        {% if clip.completed and clip.file %}
+            <a id="download-link-small" href="{% url 'soundboard:download' clip.id %}">Download Clip</a>
+        {% elif clip.failed == 'failed' %}
+            <span id="download-link-small-disabled">Failed</span>
+        {% else %}
+            <span id="download-link-small-disabled">Not ready</span>
+        {% endif %}
+        <a href="{{ clip.url }}">{{ clip.url }}</a> - {{ clip.start_time|time:'H:i:s' }} and {{ clip.stop_time|time:'H:i:s' }}
+    </li>
+{% empty %}
+    <li>No clips yet.</li>
+{% endfor %}
+</ul>
+{% endblock %}
