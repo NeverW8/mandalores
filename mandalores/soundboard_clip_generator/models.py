@@ -33,6 +33,17 @@ class SoundClip(models.Model):
         if not self.start_time < self.stop_time:
             raise ValidationError('Start time must be before stop time')
 
+    @property
+    def completed(self):
+        return self.status == self.COMPLETED_STATUS
+
+    @property
+    def failed(self):
+        return self.status == self.FAILED_STATUS
+
+    @property
+    def pending(self):
+        return self.status == self.PENDING_STATUS
 
     def __str__(self):
         return f'{self.url} between {self.start_time} <-> {self.stop_time}'
