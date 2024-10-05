@@ -29,6 +29,9 @@ To run the app for developmen you just do:
 Then you can browse to http://localhost:8000
 Then to start the Discord Auth process click the login
 
+To get the sound clips to be generated you need to run the task processor in a seperate terminal as such:
+> ./manage.py process_tasks
+
 ---
 **Note**
 This is a work in progress and is primarly used for an internal project for the zHan community.

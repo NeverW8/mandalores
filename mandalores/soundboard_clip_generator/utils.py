@@ -2,6 +2,7 @@ import os
 import subprocess
 import requests
 
+from background_task import background
 from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -16,7 +17,9 @@ def verifyURL(url):
         raise ValueError("Invalid URL {e}")
 
 
-def downloadClip(clip: SoundClip):
+@background(schedule=10)
+def downloadClip(clip_id: int):
+    clip = SoundClip.objects.get(id=clip_id)
     verifyURL(clip.url)
 
     os.makedirs(settings.MEDIA_ROOT, exist_ok=True)

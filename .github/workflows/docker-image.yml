@@ -25,7 +25,8 @@ jobs:
         docker push ghcr.io/neverw8/mandalores-django:latest
         docker build -t ghcr.io/neverw8/mandalores-nginx:latest -f nginx.Dockerfile .
         docker push ghcr.io/neverw8/mandalores-nginx:latest
-
+        docker build -t ghcr.io/neverw8/mandalores-tasks:latest -f tasks.Dockerfile .
+        docker push ghcr.io/neverw8/mandalores-tasks:latest
 
     - name: Log out of GitHub Container Registry
       run: docker logout ghcr.io

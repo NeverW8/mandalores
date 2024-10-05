@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'background_task',
     'mandalores',
     'mandalores.soundboard_clip_generator',
     'mandalores.emoji_resizer',
