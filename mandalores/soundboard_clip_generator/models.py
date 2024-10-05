@@ -3,14 +3,17 @@ from django.db import models
 
 
 class SoundClip(models.Model):
+    PENDING_STATUS = 'pending'
+    COMPLETED_STATUS = 'completed'
+    FAILED_STATUS = 'failed'
     url = models.URLField(null=False, blank=False)
     start_time = models.TimeField(null=False, blank=False)
     stop_time = models.TimeField(null=False, blank=False)
     status = models.CharField(
         choices=[
-            ('pending', 'Pending'),
-            ('completed', 'Completed'),
-            ('failed', 'Failed'),
+            (PENDING_STATUS, 'Pending'),
+            (COMPLETED_STATUS, 'Completed'),
+            (FAILED_STATUS, 'Failed'),
         ],
         default='pending',
     )
