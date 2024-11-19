@@ -10,7 +10,13 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     libpq-dev \
     build-essential \
+    wget \
+    ffmpeg \
     && apt-get clean
+
+# Install the latest yt-dlp binary
+RUN wget -O /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
+    && chmod a+rx /usr/local/bin/yt-dlp
 
 # Create application directory
 RUN mkdir -p $APP_HOME
@@ -24,11 +30,10 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY mandalores $APP_HOME/mandalores
 COPY manage.py $APP_HOME/
-COPY run_django.sh $APP_HOME/
-COPY assets $APP_HOME/assets
+COPY run_task_processor.sh $APP_HOME/
 
 ENV ENV=production
 
 EXPOSE 5000
 ENV PATH="/opt/venv/bin:$PATH"
-CMD ["/mandalores/run_django.sh"]
+CMD ["/mandalores/run_task_processor.sh"]

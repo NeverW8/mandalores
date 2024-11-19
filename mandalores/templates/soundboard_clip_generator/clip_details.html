@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Soundboard Clip Generator - Mandalores {% endblock %}
+
+{% block page_title %}Soundboard Clip Generator{% endblock %}
+
+{% block content %}
+    <p>Status: <span id="clip-status-display">{{ clip.get_status_display }}</span></p>
+    <p>Source: <span id="clip-source"><a href="{{ clip.url }}">{{ clip.url }}</a></span></p>
+    <p>Between: <span id="clip-start-time">{{ clip.start_time|time:'H:i:s' }}</span> and <span id="clip-stop-time">{{ clip.stop_time|time:'H:i:s' }}</span></p>
+    <div id="download-container">
+        {% if clip.completed and clip.file %}
+            <a id="download-link" href="{% url 'soundboard:download' clip.id %}">Download Clip</a>
+        {% endif %}
+    </div>
+
+{% if clip.pending %}
+<script>
+    function checkStatus() {
+        fetch("{% url 'soundboard:clip_details' clip.id %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.completed) {
+                    clearInterval(statusInterval);
+                    const downloadContainer = document.getElementById('download-container');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.id = 'download-link';
+                    downloadLink.href = '{% url "soundboard:download" clip.id %}';
+                    downloadLink.innerText = 'Download Clip';
+                    downloadContainer.appendChild(downloadLink);
+                    const statusDisplay = document.getElementById('clip-status-display');
+                    statusDisplay.innerText = data.statusDisplay;
+                }
+            });
+    }
+    const statusInterval = setInterval(checkStatus, 5000); // Check every 5 seconds
+</script>
+{% endif %}
+
+{% endblock %}
