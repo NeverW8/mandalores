@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'mandalores.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mandalores',
+        'NAME': 'mandaloresdb',
         'USER': getenv('DB_USER', 'mandalores'),
         'PASSWORD': getenv('DB_PASSWORD', 'mysecretpassword'),
         'HOST': getenv('DB_HOST', 'localhost'),
