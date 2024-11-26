@@ -1,3 +1,7 @@
+
+![Linting workflow](https://github.com/NeverW8/mandalores/actions/workflows/linting.yml/badge.svg)
+![Build workflow](https://github.com/NeverW8/mandalores/actions/workflows/docker-image.yml/badge.svg)
+
 # Mandalores
 A playground for some tools that the zHan community uses
 
