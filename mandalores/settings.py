@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from os import getenv
+import sys
 
 from dotenv import load_dotenv
 
@@ -165,3 +166,42 @@ USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = '/login/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'format': '[{asctime}.{msecs:0<6.0f}] [{levelname}] {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'prod': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'stream': sys.stdout,
+        },
+        'debug': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+            'formatter': 'verbose',
+            'stream': sys.stdout,
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['debug', 'prod'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

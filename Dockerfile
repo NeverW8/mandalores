@@ -25,6 +25,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY mandalores $APP_HOME/mandalores
 COPY manage.py $APP_HOME/
 COPY run_django.sh $APP_HOME/
+COPY gunicorn.py $APP_HOME/
 COPY assets $APP_HOME/assets
 
 ENV ENV=production
