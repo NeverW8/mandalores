@@ -19,14 +19,37 @@ jobs:
     - name: Log in to GitHub Container Registry
       run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
-    - name: Build and push Docker image
+    - name: Determine latest tag and increment
+      id: versioning
       run: |
-        docker build -t ghcr.io/neverw8/mandalores-django:latest .
-        docker push ghcr.io/neverw8/mandalores-django:latest
-        docker build -t ghcr.io/neverw8/mandalores-nginx:latest -f nginx.Dockerfile .
-        docker push ghcr.io/neverw8/mandalores-nginx:latest
-        docker build -t ghcr.io/neverw8/mandalores-tasks:latest -f tasks.Dockerfile .
-        docker push ghcr.io/neverw8/mandalores-tasks:latest
+        REPO="ghcr.io/${{ github.repository_owner }}/mandalores-django"
+        LATEST_TAG=$(curl -s -H "Authorization: Bearer ${{ secrets.GHCR_TOKEN }}" \
+          "https://ghcr.io/v2/${REPO}/tags/list" | jq -r '.tags | map(select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))) | sort | last')
+        echo "Latest tag: $LATEST_TAG"
+
+        if [ -z "$LATEST_TAG" ]; then
+          NEW_TAG="1.0.0"
+        else
+          IFS='.' read -r major minor patch <<< "$LATEST_TAG"
+          NEW_TAG="${major}.${minor}.$((patch + 1))"
+        fi
+
+        echo "New tag: $NEW_TAG"
+        echo "tag=$NEW_TAG" >> $GITHUB_ENV
+
+    - name: Build and push Docker images
+      env:
+        TAG: ${{ env.tag }}
+      run: |
+        docker build -t ghcr.io/${{ github.repository_owner }}/mandalores-django:$TAG .
+        docker push ghcr.io/${{ github.repository_owner }}/mandalores-django:$TAG
+
+        docker build -t ghcr.io/${{ github.repository_owner }}/mandalores-nginx:$TAG -f nginx.Dockerfile .
+        docker push ghcr.io/${{ github.repository_owner }}/mandalores-nginx:$TAG
+
+        docker build -t ghcr.io/${{ github.repository_owner }}/mandalores-tasks:$TAG -f tasks.Dockerfile .
+        docker push ghcr.io/${{ github.repository_owner }}/mandalores-tasks:$TAG
 
     - name: Log out of GitHub Container Registry
       run: docker logout ghcr.io
+
