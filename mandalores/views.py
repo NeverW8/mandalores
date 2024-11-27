@@ -1,4 +1,5 @@
 import logging
+from django.http import HttpRequest
 from django.shortcuts import redirect
 
 from django.conf import settings
@@ -20,16 +21,15 @@ class DiscordAuthView(RedirectURLMixin, View):
 
     next_page = '/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs):
         user = authenticate(request)
         if user and user.is_authenticated:
             login(request, user)
             return redirect(request.session['next_page'])
 
         request.session['next_page'] = self.get_success_url()
-
-        logger.error(f'X-Forwarded-Host: {request.GET["X-Forwarded-Host"]}')
-        logger.error(f'X-Forwarded-Proto: {request.GET["X-Forwarded-Proto"]}')
+        for header, value in request.META:
+            logger.error(f'Header: {header} : {value}')
 
         redirect_uri = request.build_absolute_uri(reverse('discord_auth'))
         discord_login_url = (
