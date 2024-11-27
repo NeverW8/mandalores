@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import redirect
 
 from django.conf import settings
@@ -6,6 +7,9 @@ from django.contrib.auth.views import RedirectURLMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import View, TemplateView
+
+
+logger = logging.getLogger(__name__)
 
 
 class LoginView(TemplateView):
@@ -23,6 +27,9 @@ class DiscordAuthView(RedirectURLMixin, View):
             return redirect(request.session['next_page'])
 
         request.session['next_page'] = self.get_success_url()
+
+        logger.error(f'X-Forwarded-Host: {request.GET["X-Forwarded-Host"]}')
+        logger.error(f'X-Forwarded-Proto: {request.GET["X-Forwarded-Proto"]}')
 
         redirect_uri = request.build_absolute_uri(reverse('discord_auth'))
         discord_login_url = (
