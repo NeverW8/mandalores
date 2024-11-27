@@ -22,8 +22,9 @@ class DiscordOAuth2AuthorizationBackend(ModelBackend):
         if 'error' in request.GET or 'code' not in request.GET:
             return None
 
-        logger.info(f'X-Forwarded-Host: {request.GET["X-Forwarded-Host"]}')
-        logger.info(f'X-Forwarded-Proto: {request.GET["X-Forwarded-Proto"]}')
+        logger.error(f'X-Forwarded-Host: {request.GET["X-Forwarded-Host"]}')
+        logger.error(f'X-Forwarded-Proto: {request.GET["X-Forwarded-Proto"]}')
+        raise Exception(f'Why you no log?! X-Forwarded-Host: {request.GET["X-Forwarded-Host"]}  X-Forwarded-Proto: {request.GET["X-Forwarded-Proto"]}')
         code = request.GET['code']
         data = {
             'grant_type': 'authorization_code',
