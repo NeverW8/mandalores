@@ -29,6 +29,10 @@ COPY run_nginx.sh $APP_HOME/
 COPY assets $APP_HOME/assets
 COPY nginx.conf /etc/nginx/nginx.conf
 
+RUN mkdir $APP_HOME/static
+RUN chown -R nginx:nginx $APP_HOME/static
+RUN chmod -R 755 $APP_HOME/static
+
 ENV ENV=production
 
 EXPOSE 8080
