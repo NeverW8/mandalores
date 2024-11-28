@@ -8,5 +8,5 @@ gunicorn --config=/mandalores/gunicorn.py \
   --capture-output \
   --log-file=- \
   --access-logfile=- \
-  --error-logfile=- \
-  --forwarded-allow-ips="*" 2>&1
+  --error-logfile=- 2>&1
+
