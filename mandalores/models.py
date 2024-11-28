@@ -41,7 +41,10 @@ class DiscordUser(models.Model):
     discord_username = models.CharField(
         unique=True,
     )
-    discord_email = models.EmailField()
+    discord_email = models.EmailField(
+        blank=True,
+        null=True,
+    )
 
 
 @receiver(user_logged_in)
