@@ -22,8 +22,8 @@ class DiscordOAuth2AuthorizationBackend(ModelBackend):
         if 'error' in request.GET or 'code' not in request.GET:
             return None
 
-        logger.error(f'X-Forwarded-Host: {request.GET["X-Forwarded-Host"]}')
-        logger.error(f'X-Forwarded-Proto: {request.GET["X-Forwarded-Proto"]}')
+        logger.error(f'X-Forwarded-Host: {request.META.get("X-Forwarded-Host")}')
+        logger.error(f'X-Forwarded-Proto: {request.META.get("X-Forwarded-Proto")}')
         code = request.GET['code']
 
         scheme = request.META.get('HTTP_X_FORWARDED_PROTO', 'https')
