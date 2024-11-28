@@ -21,11 +21,16 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ghcr.io/neverw8/mandalores-django:latest .
+        docker pull ghcr.io/neverw8/mandalores-django:latest
+        docker build --cache-from ghcr.io/neverw8/mandalores-django:latest -t ghcr.io/neverw8/mandalores-django:latest .
         docker push ghcr.io/neverw8/mandalores-django:latest
-        docker build -t ghcr.io/neverw8/mandalores-nginx:latest -f nginx.Dockerfile .
+
+        docker pull ghcr.io/neverw8/mandalores-nginx:latest
+        docker build --cache-from ghcr.io/neverw8/mandalores-nginx:latest -f nginx.Dockerfile -t ghcr.io/neverw8/mandalores-nginx:latest -f nginx.Dockerfile .
         docker push ghcr.io/neverw8/mandalores-nginx:latest
-        docker build -t ghcr.io/neverw8/mandalores-tasks:latest -f tasks.Dockerfile .
+
+        docker pull ghcr.io/neverw8/mandalores-tasks:latest
+        docker build --cache-from ghcr.io/neverw8/mandalores-tasks:latest -f tasks.Dockerfile -t ghcr.io/neverw8/mandalores-tasks:latest -f tasks.Dockerfile .
         docker push ghcr.io/neverw8/mandalores-tasks:latest
 
     - name: Log out of GitHub Container Registry

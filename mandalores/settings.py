@@ -36,6 +36,11 @@ ALLOWED_HOSTS = [
     getenv('ALLOWED_HOST', 'localhost')
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{getenv('ALLOWED_HOST', 'localhost')}"
+]
+
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
