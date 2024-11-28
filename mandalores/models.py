@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from django.contrib.auth.models import User
 
 
-def create_user_and_discord_user(username: str, email: str, discord_id: str) -> tuple['User', 'DiscordUser']:
+def create_user_and_discord_user(username: str, discord_id: str) -> tuple['User', 'DiscordUser']:
     if username not in settings.DISCORD_DEFAULT_ALLOWED_USERS:
         return None, None
 
@@ -22,7 +22,6 @@ def create_user_and_discord_user(username: str, email: str, discord_id: str) -> 
     discord_user = DiscordUser.objects.create(
         model_user=user,
         discord_id=discord_id,
-        discord_email=email,
         discord_username=username
     )
 
@@ -40,10 +39,6 @@ class DiscordUser(models.Model):
     )
     discord_username = models.CharField(
         unique=True,
-    )
-    discord_email = models.EmailField(
-        blank=True,
-        null=True,
     )
 
 

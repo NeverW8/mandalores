@@ -63,7 +63,6 @@ class DiscordOAuth2AuthorizationBackend(ModelBackend):
             'id': user_info['id'],
             'username': user_info['username'],
             'avatar': user_info['avatar'],
-            'email': user_info.get('email')
         }
 
         try:
@@ -72,7 +71,6 @@ class DiscordOAuth2AuthorizationBackend(ModelBackend):
         except DiscordUser.DoesNotExist:
             user, discord_user = create_user_and_discord_user(
                 username=user_data['username'],
-                email=user_data['email'],
                 discord_id=user_data['id']
             )
 
