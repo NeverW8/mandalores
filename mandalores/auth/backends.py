@@ -26,8 +26,7 @@ class DiscordOAuth2AuthorizationBackend(ModelBackend):
         logger.error(f'X-Forwarded-Proto: {request.META.get("X-Forwarded-Proto")}')
         code = request.GET['code']
 
-        scheme = request.META.get('HTTP_X_FORWARDED_PROTO', 'https')
-        redirect_uri = f"{scheme}://{request.get_host()}{reverse('discord_auth')}"
+        redirect_uri = f"https://{request.get_host()}{reverse('discord_auth')}"
 
         data = {
             'grant_type': 'authorization_code',

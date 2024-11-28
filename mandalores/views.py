@@ -31,7 +31,8 @@ class DiscordAuthView(RedirectURLMixin, View):
         for header, value in request.META.items():
             logger.error(f'Header: {header} : {value}')
 
-        redirect_uri = request.build_absolute_uri(reverse('discord_auth'))
+        # redirect_uri = request.build_absolute_uri(reverse('discord_auth'))
+        redirect_uri = f"https://{request.get_host()}{reverse('discord_auth')}"
         discord_login_url = (
             f"{settings.DISCORD_OAUTH_AUTHORIZE_ENDPIONT}"
             f"?client_id={settings.DISCORD_CLIENT_ID}"
