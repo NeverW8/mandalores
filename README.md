@@ -48,3 +48,4 @@ Make sure to update your DATABASE_URL in the .envrc file to match your setup, i.
 ```bash
 DATABASE_URL="postgresql+psycopg2://myuser:mysecretpassword@localhost:5432/mydatabase"
 ```
+
